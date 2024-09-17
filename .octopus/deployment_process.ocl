@@ -1,0 +1,95 @@
+step "create-namespace-if-not-exists" {
+    name = "Create namespace if not exists"
+    properties = {
+        Octopus.Action.TargetRoles = "demo-k8s-cluster"
+    }
+
+    action {
+        action_type = "Octopus.KubernetesRunScript"
+        properties = {
+            Octopus.Action.Script.ScriptBody = <<-EOT
+                # Set varaibles
+                $clusterNamespace = $OctopusParameters["Octopub.Helm.Cluster.Namespace"]
+                
+                # Get existing namespaces
+                Write-Host "Retrieving namespaces ..."
+                $namespaces = (kubectl get namespaces -o JSON | ConvertFrom-Json)
+                
+                # Check to see if namespace exists
+                if ($null -eq ($namespaces.Items | Where-Object {$_.metadata.name -eq $clusterNamespace}))
+                {
+                	# Create the namespace
+                    Write-Host "Namespace $clusetrNamespace doesn't exist, creating ..."
+                    kubectl create namespace $clusterNamespace
+                }
+                else
+                {
+                	Write-Host "Namespace $clusterNamespace already exists, moving on ..."
+                }
+                EOT
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+        }
+        worker_pool_variable = "Project.Worker.Pool"
+    }
+}
+
+step "deploy-octopub-frontend-chart" {
+    name = "Deploy Octopub Frontend chart"
+    properties = {
+        Octopus.Action.TargetRoles = "demo-k8s-cluster"
+    }
+
+    action {
+        action_type = "Octopus.HelmChartUpgrade"
+        properties = {
+            Octopus.Action.GitRepository.Source = "External"
+            Octopus.Action.Helm.ChartDirectory = "helm/octopub-frontend"
+            Octopus.Action.Helm.ClientVersion = "V3"
+            Octopus.Action.Helm.Namespace = "#{Octopub.Helm.Cluster.Namespace}"
+            Octopus.Action.Helm.ResetValues = "True"
+            Octopus.Action.Helm.YamlValues = <<-EOT
+                ingress:
+                  enabled: true
+                  className: "nginx"
+                  annotations: {
+                
+                
+                     }
+                  hosts:
+                    - host: #{Octopub.Helm.Host.Name}
+                      paths:
+                        - path: /
+                          pathType: Prefix
+                          
+                service:
+                  type: ClusterIP
+                  port: 8080
+                
+                image:
+                  repository: ghcr.io/#{Octopus.Action.Package[octopub-frontend].PackageId}
+                  tag: #{Octopus.Action.Package[octopub-frontend].PackageVersion}
+                EOT
+            Octopus.Action.Script.ScriptSource = "GitRepository"
+        }
+        worker_pool_variable = ""
+
+        git_dependencies {
+            default_branch = "main"
+            git_credential_id = "GitCredentials-922"
+            git_credential_type = "Library"
+            repository_uri = "https://github.com/OctopusSolutionsEngineering/Octopub.git"
+        }
+
+        packages "octopub-frontend" {
+            acquisition_location = "NotAcquired"
+            feed = "github-container-registry"
+            package_id = "octopussolutionsengineering/octopub-frontend"
+            properties = {
+                Extract = "False"
+                Purpose = "DockerImageReference"
+                SelectionMode = "immediate"
+            }
+        }
+    }
+}
