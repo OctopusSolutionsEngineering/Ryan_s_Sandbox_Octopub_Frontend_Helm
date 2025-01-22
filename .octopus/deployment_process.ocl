@@ -70,6 +70,7 @@ step "deploy-octopub-frontend-chart" {
                   repository: ghcr.io/#{Octopus.Action.Package[octopub-frontend].PackageId}
                   tag: #{Octopus.Action.Package[octopub-frontend].PackageVersion}
                 EOT
+            Octopus.Action.RunOnServer = "false"
             Octopus.Action.Script.ScriptSource = "GitRepository"
         }
         worker_pool_variable = ""
@@ -83,8 +84,8 @@ step "deploy-octopub-frontend-chart" {
 
         packages "octopub-frontend" {
             acquisition_location = "NotAcquired"
-            feed = "github-container-registry"
-            package_id = "octopussolutionsengineering/octopub-frontend"
+            feed = "docker-hub"
+            package_id = "octopussamples/octopub-frontend"
             properties = {
                 Extract = "False"
                 Purpose = "DockerImageReference"
