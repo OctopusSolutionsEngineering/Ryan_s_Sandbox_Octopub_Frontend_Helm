@@ -43,7 +43,7 @@ step "deploy-octopub-frontend-chart" {
     action {
         action_type = "Octopus.HelmChartUpgrade"
         properties = {
-            Octopus.Action.GitRepository.Source = "External"
+            Octopus.Action.GitRepository.Source = "Project"
             Octopus.Action.Helm.ChartDirectory = "helm/octopub-frontend"
             Octopus.Action.Helm.ClientVersion = "V3"
             Octopus.Action.Helm.Namespace = "#{Octopub.Helm.Cluster.Namespace}"
@@ -74,13 +74,6 @@ step "deploy-octopub-frontend-chart" {
             Octopus.Action.Script.ScriptSource = "GitRepository"
         }
         worker_pool_variable = ""
-
-        git_dependencies {
-            default_branch = "main"
-            git_credential_id = "GitCredentials-922"
-            git_credential_type = "Library"
-            repository_uri = "https://github.com/OctopusSolutionsEngineering/Octopub.git"
-        }
 
         packages "octopub-frontend" {
             acquisition_location = "NotAcquired"
