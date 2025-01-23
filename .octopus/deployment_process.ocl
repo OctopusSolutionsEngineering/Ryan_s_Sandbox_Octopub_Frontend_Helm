@@ -44,7 +44,7 @@ step "deploy-octopub-frontend-chart" {
         action_type = "Octopus.HelmChartUpgrade"
         properties = {
             Octopus.Action.GitRepository.Source = "Project"
-            Octopus.Action.Helm.ChartDirectory = "helm/octopub-frontend"
+            Octopus.Action.Helm.ChartDirectory = "helm"
             Octopus.Action.Helm.ClientVersion = "V3"
             Octopus.Action.Helm.Namespace = "#{Octopub.Helm.Cluster.Namespace}"
             Octopus.Action.Helm.ResetValues = "True"
