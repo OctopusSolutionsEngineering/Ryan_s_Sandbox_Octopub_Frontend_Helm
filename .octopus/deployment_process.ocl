@@ -26,7 +26,7 @@ step "create-namespace-if-not-exists" {
                 {
                 	Write-Host "Namespace $clusterNamespace already exists, moving on ..."
                 }
-                EOT
+                    EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
         }
@@ -69,7 +69,7 @@ step "deploy-octopub-frontend-chart" {
                 image:
                   repository: ghcr.io/#{Octopus.Action.Package[octopub-frontend].PackageId}
                   tag: #{Octopus.Action.Package[octopub-frontend].PackageVersion}
-                EOT
+                    EOT
             Octopus.Action.RunOnServer = "false"
             Octopus.Action.Script.ScriptSource = "GitRepository"
         }
