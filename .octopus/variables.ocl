@@ -11,3 +11,11 @@ variable "Project.Worker.Pool" {
 
     value "azure-worker-pool" {}
 }
+
+variable "Project.Helm.Replicas" {
+    value "1" {}
+
+    value "3" {
+        environment = ["production"]
+    }
+}
