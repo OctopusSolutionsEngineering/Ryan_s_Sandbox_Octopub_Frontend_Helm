@@ -19,3 +19,7 @@ variable "Project.Helm.Replicas" {
         environment = ["production"]
     }
 }
+
+variable "Project.Image.Tag" {
+    value "#{Octopus.Action.Package[octopub-frontend].PackageVersion}" {}
+}
