@@ -23,3 +23,7 @@ variable "Project.Helm.Replicas" {
 variable "Project.Image.Tag" {
     value "#{Octopus.Action.Package[octopub-frontend].PackageVersion}" {}
 }
+
+variable "Project.Image.Name" {
+    value "#{Octopus.Action.Package[octopub-frontend].PackageId}" {}
+}
