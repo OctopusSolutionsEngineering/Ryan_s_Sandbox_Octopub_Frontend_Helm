@@ -52,7 +52,7 @@ step "deploy-octopub-frontend-chart" {
                 [
                   {
                     "Type": "InlineYaml",
-                    "Value": "replicaCount: #{Project.Helm.Replicas}\ningress:\n  enabled: true\n  className: \"nginx\"\n  annotations: {\n\n\n     }\n  hosts:\n    - host: #{Octopub.Helm.Host.Name}\n      paths:\n        - path: /\n          pathType: Prefix\n          \nservice:\n  type: ClusterIP\n  port: 8080\n\nimage:\n  repository: ghcr.io/#{Octopus.Action.Package[octopub-frontend].PackageId}\n  tag: #{Octopus.Action.Package[octopub-frontend].PackageVersion}"
+                    "Value": "replicaCount: #{Project.Helm.Replicas}\ningress:\n  enabled: true\n  className: \"nginx\"\n  annotations: {\n\n\n     }\n  hosts:\n    - host: #{Octopub.Helm.Host.Name}\n      paths:\n        - path: /\n          pathType: Prefix\n          \nservice:\n  type: ClusterIP\n  port: 8080\n\nimage:\n  repository: ghcr.io/#{Project.Image.Name}\n  tag: #{Project.Image.Tag}"
                   }
                 ]
                 EOT
