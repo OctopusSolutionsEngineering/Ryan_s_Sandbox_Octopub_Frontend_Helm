@@ -70,7 +70,7 @@ step "deploy-octopub-frontend-chart" {
                   repository: ghcr.io/#{Octopus.Action.Package[octopub-frontend].PackageId}
                   tag: #{Octopus.Action.Package[octopub-frontend].PackageVersion}
                 EOT
-            Octopus.Action.Kubernetes.ResourceStatusCheck = "True"
+            Octopus.Action.Kubernetes.ResourceStatusCheck = "False"
             Octopus.Action.RunOnServer = "false"
             Octopus.Action.Script.ScriptSource = "GitRepository"
         }
